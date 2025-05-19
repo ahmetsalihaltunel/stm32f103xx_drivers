@@ -4,9 +4,8 @@ This repository contains a low-level driver library written in C for the STM32F1
 
 ## ✅ Completed
 - GPIO (General Purpose Input/Output)
-
+- SPI (Serial Peripheral Interface)
 ## 🔄 In Progress
-- SPI
 - I2C
 - UART / USART
 
@@ -22,13 +21,20 @@ The goals of this project are to:
 
 ## 🛠️ Getting Started
 
-To use the GPIO driver:
+1. Place the source files (.c) into your project's src folder and the header files (.h) into the inc folder.
+2. Include the necessary headers in your source code:
 
-1. Add `stm32f103xx_gpio.c` to your project source files.  
-2. Include `stm32f103xx.h` and `stm32f103xx_gpio.h` in your main code.  
-3. Use the provided API functions to configure and control GPIO pins.  
-4. Refer to the example project (`Examples/001_led_toggle`) for usage.
+```c
+#include "stm32f103xx.h"
+#include "stm32f103xx_gpio.h"
+#include "stm32f103xx_spi.h"
+```
 
+3. Use the provided API functions to configure and control GPIO pins and SPI peripherals.
+4. Check out the example projects for usage:
+   - GPIO: Examples/001_led_toggle
+   - SPI: Examples/004_spi_tx
+   
 ## 📌 Notes
 - Drivers are written from scratch using only CMSIS headers and the STM32 reference manual.  
 - Example projects will be added for each module.
