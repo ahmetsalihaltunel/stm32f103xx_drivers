@@ -8,6 +8,7 @@
 #ifndef INC_STM32F103XX_H_
 #define INC_STM32F103XX_H_
 
+#include <stddef.h>
 #include <stdint.h>
 
 /****************************************Processor Specified Deteails**************************************************/
@@ -88,6 +89,9 @@
 
 /************************Peripheral Register Definition Structures***************************************/
 
+/*
+ * Peripheral register definition structure for RCC
+ */
 typedef struct
 {
 	volatile uint32_t CR; 				// Clock control register							Address offset:0x00
@@ -105,7 +109,9 @@ typedef struct
 
 }RCC_RegDef_t;
 
-
+/*
+ * Peripheral register definition structure for EXTI
+ */
 typedef struct
 {
 	volatile uint32_t IMR; 				// Interrupt mask register							Address offset:0x00
@@ -116,7 +122,9 @@ typedef struct
 	volatile uint32_t PR;				// Pending register									Address offset:0x14
 }EXTI_RegDef_t;
 
-
+/*
+ * Peripheral register definition structure for GPIO
+ */
 typedef struct
 {
 	volatile uint32_t CRL;				// Port configuration register low					Address offset:0x00
@@ -128,7 +136,9 @@ typedef struct
 	volatile uint32_t LCKR;				// Port configuration lock register					Address offset:0x18
 }GPIO_RegDef_t;
 
-
+/*
+ * Peripheral register definition structure for AFIO
+ */
 typedef struct
 {
 	volatile uint32_t EVCR;				// Event control register 							Address offset:0x00
@@ -136,6 +146,22 @@ typedef struct
 	volatile uint32_t EXTICR[4];		// External interrupt configuration registers 		Address offset:0x08-0x14
 	volatile uint32_t MAPR2;			// AF remap and debug I/O configuration register2	Address offset:0x18
 }AFIO_RegDef_t;
+
+/*
+ * Peripheral register definition structure for SPI
+ */
+typedef struct
+{
+	volatile uint32_t CR1;				// SPI control register 1							Address offset:0x00
+	volatile uint32_t CR2;				// SPI control register 2							Address offset:0x04
+	volatile uint32_t SR;				// SPI status register								Address offset:0x08
+	volatile uint32_t DR;				// SPI data register								Address offset:0x0c
+	volatile uint32_t CRCPR;			// SPI CRC polynomial register						Address offset:0x10
+	volatile uint32_t RXCRCR;			// SPI RX CRC register								Address offset:0x14
+	volatile uint32_t TXCRCR;			// SPI TX CRC register								Address offset:0x18
+	volatile uint32_t I2SCFGR;			// SPI_I2S configuration register					Address offset:0x1c
+	volatile uint32_t I2SPR;			// SPI_I2S prescaler register						Address offset:0x20
+}SPI_RegDef_t;
 
 
 /*
@@ -154,6 +180,11 @@ typedef struct
 #define EXTI ((EXTI_RegDef_t*) EXTI_BASEADDR)  						// EXTI register structure pointer
 
 #define AFIO ((AFIO_RegDef_t*) AFIO_BASEADDR)  						// AFIO register structure pointer
+
+#define SPI1 ((SPI_RegDef_t*) SPI1_BASEADDR)						// SPI1 register structure pointer
+#define SPI2 ((SPI_RegDef_t*) SPI2_BASEADDR)						// SPI2 register structure pointer
+#define SPI3 ((SPI_RegDef_t*) SPI3_BASEADDR)						// SPI3 register structure pointer
+
 
 /*
  * Clock Enable Macro for GPIOx peripherals
@@ -237,6 +268,15 @@ typedef struct
 #define GPIOE_REG_RESET();	do{ (RCC->APB2RSTR |= (1 << 4) ); (RCC->APB2RSTR &= ~(1 << 4) );} while(0)
 
 /*
+ * Macros to reset the SPIx peripheral
+ */
+#define SPI1_REG_RESET();	do{ (RCC->APB2RSTR |= (1 << 12) ); (RCC->APB2RSTR &= ~(1 << 12) );} while(0)
+#define SPI2_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 14) ); (RCC->APB1RSTR &= ~(1 << 14) );} while(0)
+#define SPI3_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 15) ); (RCC->APB1RSTR &= ~(1 << 15) );} while(0)
+
+
+
+/*
  * IRQ(Interrupts Request) Numbers of STM32F103x
  * NOTE: Update these macros with valid values according to you MCU
  */
@@ -247,6 +287,10 @@ typedef struct
 #define IRQ_NO_EXTI4				10
 #define IRQ_NO_EXTI9_5				23
 #define IRQ_NO_EXTI15_10			40
+#define IRQ_NO_SPI1					35
+#define IRQ_NO_SPI2					36
+#define IRQ_NO_SPI3					51
+
 
 /*
  * Generic Macros
@@ -257,7 +301,60 @@ typedef struct
 #define RESET 						DISABLE
 #define GPIO_PIN_SET 				SET
 #define GPIO_PIN_RESET 				RESET
+#define FLAG_RESET 					RESET
+#define FLAG_SET 					SET
+
+/**************************************************
+ * Bit Position Definitions for SPI Peripheral
+ **************************************************/
+
+/*
+ * Bit position definitions for SPI_CR1
+ */
+#define SPI_CR1_CPHA       0   // Clock Phase
+#define SPI_CR1_CPOL       1   // Clock Polarity
+#define SPI_CR1_MSTR       2   // Master Selection
+#define SPI_CR1_BR         3   // Baud Rate Control (3 bits: 3-5)
+#define SPI_CR1_SPE        6   // SPI Enable
+#define SPI_CR1_LSBFIRST   7   // Frame Format (LSB/MSB first)
+#define SPI_CR1_SSI        8   // Internal Slave Select
+#define SPI_CR1_SSM        9   // Software Slave Management
+#define SPI_CR1_RXONLY     10  // Receive Only
+#define SPI_CR1_DFF        11  // Data Frame Format (8-bit or 16-bit)
+#define SPI_CR1_CRCNEXT    12  // CRC Transfer Next
+#define SPI_CR1_CRCEN      13  // Hardware CRC Calculation Enable
+#define SPI_CR1_BIDIOE     14  // Output Enable in Bidirectional Mode
+#define SPI_CR1_BIDIMODE   15  // Bidirectional Data Mode Enable
+
+/*
+ * Bit position definitions for SPI_CR2
+ */
+#define SPI_CR2_RXDMAEN    0   // Rx Buffer DMA Enable
+#define SPI_CR2_TXDMAEN    1   // Tx Buffer DMA Enable
+#define SPI_CR2_SSOE       2   // SS Output Enable
+#define SPI_CR2_ERRIE      5   // Error Interrupt Enable
+#define SPI_CR2_RXNEIE     6   // RX buffer Not Empty Interrupt Enable
+#define SPI_CR2_TXEIE      7   // Tx buffer Empty Interrupt Enable
+
+/*
+ * Bit position definitions for SPI_SR (Status Register)
+ */
+#define SPI_SR_RXNE        0   // Receive Buffer Not Empty
+#define SPI_SR_TXE         1   // Transmit Buffer Empty
+#define SPI_SR_CHSIDE      2   // Channel Side
+#define SPI_SR_UDR         3   // Underrun Flag
+#define SPI_SR_CRCERR      4   // CRC Error Flag
+#define SPI_SR_MODF        5   // Mode Fault
+#define SPI_SR_OVR         6   // Overrun Flag
+#define SPI_SR_BSY         7   // Busy Flag
+
+
+
+
+
+
 
 #include "stm32f103xx_gpio_driver.h"
+#include "stm32f103xx_spi_driver.h"
 
 #endif /* INC_STM32F103XX_H_ */
