@@ -29,12 +29,15 @@ The goals of this project are to:
 #include "stm32f103xx.h"
 #include "stm32f103xx_gpio.h"
 #include "stm32f103xx_spi.h"
+#include "stm32f103xx_i2c.h"
+#include "stm32f103xx_rcc.h"
 ```
 
-3. Use the provided API functions to configure and control GPIO pins and SPI peripherals.
+3. Use the provided API functions to configure and control GPIO, SPI, and I2C peripherals.
 4. Check out the example projects for usage:
    - GPIO: Examples/001_led_toggle
    - SPI: Examples/004_spi_tx
+   - I2C: Examples/005_i2c_master_tx
    
 ## 📌 Notes
 - Drivers are written from scratch using only CMSIS headers and the STM32 reference manual.  
