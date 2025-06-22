@@ -5,8 +5,9 @@ This repository contains a low-level driver library written in C for the STM32F1
 ## ✅ Completed
 - GPIO (General Purpose Input/Output)
 - SPI (Serial Peripheral Interface)
+- I2C (Inter-Integrated Circuit)
+- 
 ## 🔄 In Progress
-- I2C
 - UART / USART
 
 ## 📖 About This Project
