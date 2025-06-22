@@ -404,7 +404,7 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, ui
 	if( (busystate != I2C_BUSY_IN_TX) && (busystate != I2C_BUSY_IN_RX))
 	{
 		pI2CHandle->pRxBuffer = pRxBuffer;
-		pI2CHandle->TxLen = Len;
+		pI2CHandle->RxLen = Len;
 		pI2CHandle->TxRxState = I2C_BUSY_IN_RX;
 		pI2CHandle->DevAddr = SlaveAddr;
 		pI2CHandle->Sr = Sr;
