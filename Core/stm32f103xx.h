@@ -163,6 +163,23 @@ typedef struct
 	volatile uint32_t I2SPR;			// SPI_I2S prescaler register						Address offset:0x20
 }SPI_RegDef_t;
 
+/*
+ * Peripheral register definition structure for I2C
+ */
+typedef struct
+{
+	volatile uint32_t CR1;				// I2C control register 1							Address offset:0x00
+	volatile uint32_t CR2;				// I2C control register 2							Address offset:0x04
+	volatile uint32_t OAR1;				// I2C oar address register 1						Address offset:0x08
+	volatile uint32_t OAR2;				// I2C oar address register 2						Address offset:0x0C
+	volatile uint32_t DR;				// I2C data register 1								Address offset:0x10
+	volatile uint32_t SR1;				// I2C status register 1							Address offset:0x14
+	volatile uint32_t SR2;				// I2C status register 2							Address offset:0x18
+	volatile uint32_t CCR;				// I2C clock control register						Address offset:0x1C
+	volatile uint32_t TRISE;			// I2C TRISE register								Address offset:0x20
+
+
+}I2C_RegDef_t;
 
 /*
  * Peripheral Definitions
@@ -185,6 +202,9 @@ typedef struct
 #define SPI2 ((SPI_RegDef_t*) SPI2_BASEADDR)						// SPI2 register structure pointer
 #define SPI3 ((SPI_RegDef_t*) SPI3_BASEADDR)						// SPI3 register structure pointer
 
+#define I2C1 ((I2C_RegDef_t*) I2C1_BASEADDR)						// I2C1 register structure pointer
+#define I2C2 ((I2C_RegDef_t*) I2C2_BASEADDR)						// I2C2 register structure pointer
+#define I2C3 ((I2C_RegDef_t*) I2C3_BASEADDR)						// I2C3 register structure pointer
 
 /*
  * Clock Enable Macro for GPIOx peripherals
@@ -274,7 +294,11 @@ typedef struct
 #define SPI2_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 14) ); (RCC->APB1RSTR &= ~(1 << 14) );} while(0)
 #define SPI3_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 15) ); (RCC->APB1RSTR &= ~(1 << 15) );} while(0)
 
-
+/*
+ * Macros to reset the I2Cx peripheral
+ */
+#define I2C1_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 21) ); (RCC->APB1RSTR &= ~(1 << 21) );} while(0)
+#define I2C2_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 22) ); (RCC->APB1RSTR &= ~(1 << 22) );} while(0)
 
 /*
  * IRQ(Interrupts Request) Numbers of STM32F103x
@@ -290,6 +314,10 @@ typedef struct
 #define IRQ_NO_SPI1					35
 #define IRQ_NO_SPI2					36
 #define IRQ_NO_SPI3					51
+#define IRQ_NO_I2C1_EV				31
+#define IRQ_NO_I2C1_ER				32
+#define IRQ_NO_I2C2_EV				33
+#define IRQ_NO_I2C2_ER				34
 
 
 /*
@@ -311,42 +339,96 @@ typedef struct
 /*
  * Bit position definitions for SPI_CR1
  */
-#define SPI_CR1_CPHA       0   // Clock Phase
-#define SPI_CR1_CPOL       1   // Clock Polarity
-#define SPI_CR1_MSTR       2   // Master Selection
-#define SPI_CR1_BR         3   // Baud Rate Control (3 bits: 3-5)
-#define SPI_CR1_SPE        6   // SPI Enable
-#define SPI_CR1_LSBFIRST   7   // Frame Format (LSB/MSB first)
-#define SPI_CR1_SSI        8   // Internal Slave Select
-#define SPI_CR1_SSM        9   // Software Slave Management
-#define SPI_CR1_RXONLY     10  // Receive Only
-#define SPI_CR1_DFF        11  // Data Frame Format (8-bit or 16-bit)
-#define SPI_CR1_CRCNEXT    12  // CRC Transfer Next
-#define SPI_CR1_CRCEN      13  // Hardware CRC Calculation Enable
-#define SPI_CR1_BIDIOE     14  // Output Enable in Bidirectional Mode
-#define SPI_CR1_BIDIMODE   15  // Bidirectional Data Mode Enable
+#define SPI_CR1_CPHA		0   // Clock Phase
+#define SPI_CR1_CPOL		1   // Clock Polarity
+#define SPI_CR1_MSTR		2   // Master Selection
+#define SPI_CR1_BR			3   // Baud Rate Control (3 bits: 3-5)
+#define SPI_CR1_SPE			6   // SPI Enable
+#define SPI_CR1_LSBFIRST	7   // Frame Format (LSB/MSB first)
+#define SPI_CR1_SSI			8   // Internal Slave Select
+#define SPI_CR1_SSM			9   // Software Slave Management
+#define SPI_CR1_RXONLY		10  // Receive Only
+#define SPI_CR1_DFF			11  // Data Frame Format (8-bit or 16-bit)
+#define SPI_CR1_CRCNEXT		12  // CRC Transfer Next
+#define SPI_CR1_CRCEN		13  // Hardware CRC Calculation Enable
+#define SPI_CR1_BIDIOE		14  // Output Enable in Bidirectional Mode
+#define SPI_CR1_BIDIMODE	15  // Bidirectional Data Mode Enable
 
 /*
  * Bit position definitions for SPI_CR2
  */
-#define SPI_CR2_RXDMAEN    0   // Rx Buffer DMA Enable
-#define SPI_CR2_TXDMAEN    1   // Tx Buffer DMA Enable
-#define SPI_CR2_SSOE       2   // SS Output Enable
-#define SPI_CR2_ERRIE      5   // Error Interrupt Enable
-#define SPI_CR2_RXNEIE     6   // RX buffer Not Empty Interrupt Enable
-#define SPI_CR2_TXEIE      7   // Tx buffer Empty Interrupt Enable
+#define SPI_CR2_RXDMAEN		0   // Rx Buffer DMA Enable
+#define SPI_CR2_TXDMAEN		1   // Tx Buffer DMA Enable
+#define SPI_CR2_SSOE		2   // SS Output Enable
+#define SPI_CR2_ERRIE		5   // Error Interrupt Enable
+#define SPI_CR2_RXNEIE		6   // RX buffer Not Empty Interrupt Enable
+#define SPI_CR2_TXEIE		7   // Tx buffer Empty Interrupt Enable
 
 /*
  * Bit position definitions for SPI_SR (Status Register)
  */
-#define SPI_SR_RXNE        0   // Receive Buffer Not Empty
-#define SPI_SR_TXE         1   // Transmit Buffer Empty
-#define SPI_SR_CHSIDE      2   // Channel Side
-#define SPI_SR_UDR         3   // Underrun Flag
-#define SPI_SR_CRCERR      4   // CRC Error Flag
-#define SPI_SR_MODF        5   // Mode Fault
-#define SPI_SR_OVR         6   // Overrun Flag
-#define SPI_SR_BSY         7   // Busy Flag
+#define SPI_SR_RXNE			0	// Receive Buffer Not Empty
+#define SPI_SR_TXE			1	// Transmit Buffer Empty
+#define SPI_SR_CHSIDE		2	// Channel Side
+#define SPI_SR_UDR			3	// Underrun Flag
+#define SPI_SR_CRCERR		4	// CRC Error Flag
+#define SPI_SR_MODF			5	// Mode Fault
+#define SPI_SR_OVR			6	// Overrun Flag
+#define SPI_SR_BSY			7	// Busy Flag
+
+/**************************************************
+ * Bit Position Definitions for I2C Peripheral
+ **************************************************/
+
+/*
+ * Bit position definitions for I2C_CR1
+ */
+#define I2C_CR1_PE			0	// Peripheral enable
+#define I2C_CR1_NOSTRETCH	7	// Clock stretching disable (Slave mode)
+#define I2C_CR1_START		8	// Stop generation
+#define I2C_CR1_STOP		9	// Stop generation
+#define I2C_CR1_ACK			10	// Acknowledge enable
+#define I2C_CR1_SWRST		15	// Software reset
+
+/*
+ * Bit position definitions for I2C_CR2
+ */
+#define I2C_CR2_FREQ		0	// Peripheral clock frequency
+#define I2C_CR2_ITERREN		8	// Error interrupt enable
+#define I2C_CR2_ITEVTEN		9	// Event interrupt enable
+#define I2C_CR2_ITBUFEN		10	// Buffer interrupt enable
+
+/*
+ * Bit position definitions for I2C_SR1
+ */
+#define I2C_SR1_SB			0	// Start bit (Master mode)
+#define I2C_SR1_ADDR		1	// Address sent (master mode)/matched (slave mode)
+#define I2C_SR1_BTF			2	// Byte transfer finished
+#define I2C_SR1_ADD10		3	// 10-bit header sent (Master mode)
+#define I2C_SR1_STOPF		4	// Stop detection (slave mode)
+#define I2C_SR1_RXNE		6	// Data register not empty (receivers)
+#define I2C_SR1_TXE			7	// Data register empty (transmitters)
+#define I2C_SR1_BERR		8	// Bus error
+#define I2C_SR1_ARLO		9	// Arbitration lost (master mode)
+#define I2C_SR1_AF			10	// Acknowledge failure
+#define I2C_SR1_OVR			11	// Overrun/Underrun
+#define I2C_SR1_TIMEOUT		14	// Timeout or Tlow error
+
+/*
+ * Bit position definitions for I2C_SR2
+ */
+#define I2C_SR2_MSL			0	// Master/slave
+#define I2C_SR2_BUSY		1	// Bus busy
+#define I2C_SR2_TRA			2	// Transmitter/receiver
+#define I2C_SR2_GENCALL		4	// General call address (Slave mode)
+#define I2C_SR2_DUALF		7	// Dual flag (Slave mode)
+
+/*
+ * Bit position definitions for I2C_CRR
+ */
+#define I2C_CRR_CCR			0	// Clock control register in Fm/Sm mode (Master mode)
+#define I2C_CRR_DUTY		14	// Fm mode duty cycle
+#define I2C_CRR_FS			15	// I2C master mode selection
 
 
 
@@ -356,5 +438,7 @@ typedef struct
 
 #include "stm32f103xx_gpio_driver.h"
 #include "stm32f103xx_spi_driver.h"
+#include "stm32f103xx_i2c_driver.h"
+#include "stm32f103xx_rcc_driver.h"
 
 #endif /* INC_STM32F103XX_H_ */
