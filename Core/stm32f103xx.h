@@ -177,20 +177,34 @@ typedef struct
 	volatile uint32_t SR2;				// I2C status register 2							Address offset:0x18
 	volatile uint32_t CCR;				// I2C clock control register						Address offset:0x1C
 	volatile uint32_t TRISE;			// I2C TRISE register								Address offset:0x20
-
-
 }I2C_RegDef_t;
+
+/*
+ * Peripheral register definition structure for USART
+ */
+typedef struct
+{
+	volatile uint32_t SR;				// USART status register							Address offset:0x00
+	volatile uint32_t DR;				// USART data register								Address offset:0x04
+	volatile uint32_t BRR;				// USART baud rate register							Address offset:0x08
+	volatile uint32_t CR1;				// USART control register 1							Address offset:0x0C
+	volatile uint32_t CR2;				// USART control register 2							Address offset:0x10
+	volatile uint32_t CR3;				// USART control register 3							Address offset:0x14
+	volatile uint32_t GTPR;				// USART Guard time and prescaler register			Address offset:0x18
+}USART_RegDef_t;
+
+
 
 /*
  * Peripheral Definitions
  */
-#define GPIOA  ((GPIO_RegDef_t*) GPIOA_BASEADDR)					// GPIOA register structure pointer
-#define GPIOB  ((GPIO_RegDef_t*) GPIOB_BASEADDR)					// GPIOB register structure pointer
-#define GPIOC  ((GPIO_RegDef_t*) GPIOC_BASEADDR)					// GPIOC register structure pointer
-#define GPIOD  ((GPIO_RegDef_t*) GPIOD_BASEADDR)					// GPIOD register structure pointer
-#define GPIOE  ((GPIO_RegDef_t*) GPIOE_BASEADDR)					// GPIOE register structure pointer
-#define GPIOF  ((GPIO_RegDef_t*) GPIOF_BASEADDR)					// GPIOF register structure pointer
-#define GPIOG  ((GPIO_RegDef_t*) GPIOG_BASEADDR)					// GPIOG register structure pointer
+#define GPIOA ((GPIO_RegDef_t*) GPIOA_BASEADDR)					// GPIOA register structure pointer
+#define GPIOB ((GPIO_RegDef_t*) GPIOB_BASEADDR)					// GPIOB register structure pointer
+#define GPIOC ((GPIO_RegDef_t*) GPIOC_BASEADDR)					// GPIOC register structure pointer
+#define GPIOD ((GPIO_RegDef_t*) GPIOD_BASEADDR)					// GPIOD register structure pointer
+#define GPIOE ((GPIO_RegDef_t*) GPIOE_BASEADDR)					// GPIOE register structure pointer
+#define GPIOF ((GPIO_RegDef_t*) GPIOF_BASEADDR)					// GPIOF register structure pointer
+#define GPIOG ((GPIO_RegDef_t*) GPIOG_BASEADDR)					// GPIOG register structure pointer
 
 #define RCC  ((RCC_RegDef_t*) RCC_BASEADDR)  						// RCC register structure pointer
 
@@ -205,6 +219,12 @@ typedef struct
 #define I2C1 ((I2C_RegDef_t*) I2C1_BASEADDR)						// I2C1 register structure pointer
 #define I2C2 ((I2C_RegDef_t*) I2C2_BASEADDR)						// I2C2 register structure pointer
 #define I2C3 ((I2C_RegDef_t*) I2C3_BASEADDR)						// I2C3 register structure pointer
+
+#define USART1 ((USART_RegDef_t*) USART1_BASEADDR)					// USART1  register structure pointer
+#define USART2 ((USART_RegDef_t*) USART2_BASEADDR)					// USART2  register structure pointer
+#define USART3 ((USART_RegDef_t*) USART3_BASEADDR)					// USART3  register structure pointer
+#define UART4 ((USART_RegDef_t*) UART4_BASEADDR)					// UART4  register structure pointer
+#define UART5 ((USART_RegDef_t*) UART5_BASEADDR)					// UART5  register structure pointer
 
 /*
  * Clock Enable Macro for GPIOx peripherals
@@ -299,6 +319,15 @@ typedef struct
  */
 #define I2C1_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 21) ); (RCC->APB1RSTR &= ~(1 << 21) );} while(0)
 #define I2C2_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 22) ); (RCC->APB1RSTR &= ~(1 << 22) );} while(0)
+
+/*
+ * Macros to reset the I2Cx peripheral
+ */
+#define USART1_REG_RESET();	do{ (RCC->APB2RSTR |= (1 << 14) ); (RCC->APB2RSTR &= ~(1 << 14) );} while(0)
+#define USART2_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 17) ); (RCC->APB1RSTR &= ~(1 << 17) );} while(0)
+#define USART3_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 18) ); (RCC->APB1RSTR &= ~(1 << 18) );} while(0)
+#define UART4_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 19) ); (RCC->APB1RSTR &= ~(1 << 19) );} while(0)
+#define UART5_REG_RESET();	do{ (RCC->APB1RSTR |= (1 << 20) ); (RCC->APB1RSTR &= ~(1 << 20) );} while(0)
 
 /*
  * IRQ(Interrupts Request) Numbers of STM32F103x
@@ -430,9 +459,69 @@ typedef struct
 #define I2C_CRR_DUTY		14	// Fm mode duty cycle
 #define I2C_CRR_FS			15	// I2C master mode selection
 
+/**************************************************
+ * Bit Position Definitions for USART Peripheral
+ **************************************************/
 
+/*
+ * Bit position definitions for USART_CR1
+ */
+#define USART_CR1_SBK			0	// Send break
+#define USART_CR1_RWU			1	// Receiver wakeup
+#define USART_CR1_RE			2	// Receiver enable
+#define USART_CR1_TE			3	// Transmitter enable
+#define USART_CR1_IDLEIE		4	// IDLE interrupt enable
+#define USART_CR1_RXNEIE		5	// RXNE interrupt enable
+#define USART_CR1_TCIE			6	// Transmission complete interrupt enable
+#define USART_CR1_TXEIE			7	// TXE interrupt enable
+#define USART_CR1_PEIE			8	// PE interrupt enable
+#define USART_CR1_PS			9	// Parity selection
+#define USART_CR1_PCE			10	// Parity control enable
+#define USART_CR1_WAKE			11	// Wakeup method
+#define USART_CR1_M				12	// Word length
+#define USART_CR1_UE			13	// USART enable
 
+/*
+ * Bit position definitions for USART_CR2
+ */
+#define USART_CR2_ADD			0	// Address of the USART node
+#define USART_CR2_LBDL			5	// Lin break detection length
+#define USART_CR2_LBDIE			6	// LiN break detection interrupt enable
+#define USART_CR2_LBCL			8	// Last bit clock pulse
+#define USART_CR2_CPHA			9	// Clock phase
+#define USART_CR2_CPOL			10	// Clock polarity
+#define USART_CR2_CLKEN			11	// Clock enable
+#define USART_CR2_STOP			12	// STOP bits
+#define USART_CR2_LINEN			14	// LIN mode enable
 
+/*
+ * Bit position definitions for USART_CR3
+ */
+#define USART_CR3_EIE			0	// Error interrupt enable
+#define USART_CR3_IREN			1	// IrDA mode enable
+#define USART_CR3_IRLP			2	// IrDA low-power
+#define USART_CR3_HDSEL			3	// Half-duplex selection
+#define USART_CR3_NACK			4	// Smartcard NACK enable
+#define USART_CR3_SCEN			5	// Smartcard mode enable
+#define USART_CR3_DMAR			6	// DMA enable receiver
+#define USART_CR3_DMAT			7	// DMA enable transmitter
+#define USART_CR3_RTSE			8	// RTS enable
+#define USART_CR3_CTSE			9	// CTS enable
+#define USART_CR3_CTSIE			10	// CTS interrupt enable
+
+/*
+ * Bit position definitions for USART_SR
+ */
+#define USART_SR_PE				0	// Parity error
+#define USART_SR_FE				1	// Framing error
+#define USART_SR_NE				2	// Noise error flag
+#define USART_SR_ORE			3	// Overrun error
+#define USART_SR_IDLE			4	// IDLE line detected
+#define USART_SR_RXNE			5	// Read data register not empty
+#define USART_SR_TC				6	// Transmission complete
+#define USART_SR_TXE			7	// Transmit data register empty
+#define USART_SR_LBD			8	// LIN break detection flag
+#define USART_SR_CTS			9	// CTS flag
 
 
 
@@ -440,5 +529,6 @@ typedef struct
 #include "stm32f103xx_spi_driver.h"
 #include "stm32f103xx_i2c_driver.h"
 #include "stm32f103xx_rcc_driver.h"
+#include "stm32f103xx_usart_driver.h"
 
 #endif /* INC_STM32F103XX_H_ */

@@ -426,6 +426,71 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, ui
 }
 
 /**
+  * @brief  Enables or disables IRQ for a given interrupt number.
+  * @param  IRQNumber: IRQ (Interrupt Request) number to configure.
+  * @param  EnorDi: ENABLE or DISABLE macros.
+  * @retval None
+  */
+void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE)
+	{
+		if(IRQNumber <=31)
+		{
+			// Program ISER0 Register
+			*NVIC_ISER0 |= (1 << IRQNumber);
+
+		}else if (IRQNumber > 31 && IRQNumber < 64 ) // Between 32 and 63
+		{
+			// Program ISER1 Register
+			*NVIC_ISER1 |= (1 << IRQNumber % 32);
+
+		}else if (IRQNumber >= 64 && IRQNumber < 96 ) // Between 64 and 95
+		{
+			// Program ISER2 Register
+			*NVIC_ISER2 |= (1 << IRQNumber % 64);
+		}
+	}else
+	{
+		if(IRQNumber <=31)
+		{
+			// Program ICER0 Register
+			*NVIC_ICER0 |= (1 << IRQNumber);
+
+		}else if (IRQNumber > 31 && IRQNumber < 64 ) // Between 32 and 63
+		{
+			// Program ICER1 Register
+			*NVIC_ICER1 |= (1 << IRQNumber % 32);
+
+		}else if (IRQNumber >= 64 && IRQNumber < 96 ) // Between 64 and 95
+		{
+			// Program ICER2 Register
+			*NVIC_ICER2 |= (1 << IRQNumber % 64);
+		}
+
+	}
+
+}
+
+/**
+  * @brief  Configures the priority of a given IRQ number in the NVIC.
+  * @param  IRQNumber: IRQ (Interrupt Request) number to configure.
+  * @param  IRQPriority: Priority level to assign to the IRQ (0 = highest, 15 = lowest for 4-bit priority fields).
+  * @retval None
+  */
+void I2C_IRQPriorityConfig (uint8_t IRQNumber, uint32_t IRQPriority)
+{
+	// Calculate the index of the IRQ register for the given IRQ number
+	uint8_t ipr_index = (IRQNumber / 4) ;
+
+	// Calculate the section within the IPR register for the given IRQ number
+	uint8_t ipr_section = (IRQNumber % 4) * 8;
+
+	*(NVIC_PR_BASE_ADDR + ipr_index) &= ~(0xFF << (ipr_section)); 					// Clear the existing priority bit
+	*(NVIC_PR_BASE_ADDR + ipr_index) |= (IRQPriority << (ipr_section + 4));			// Set the new priority value
+}
+
+/**
   * @brief	Handles the I2C TXE (Transmit Data Register Empty) interrupt event for master mode.
   *         This function sends the next byte of data if there is data remaining in the buffer.
   * @param	pI2CHandle: Pointer to the I2C handle structure.
