@@ -2,14 +2,12 @@
 
 This repository contains a low-level driver library written in C for the STM32F103xx microcontroller series. The aim is to gain a deeper understanding of how STM32 peripherals work at the register level, without using HAL or SPL libraries.
 
-## ✅ Completed
+## ✅ Completed Drivers
 - GPIO (General Purpose Input/Output)
 - SPI (Serial Peripheral Interface)
 - I2C (Inter-Integrated Circuit)
+- USART (Universal Synchronous/Asynchronous Receiver/Transmitter)
   
-## 🔄 In Progress
-- UART / USART
-
 ## 📖 About This Project
 
 This project was created as part of my personal learning journey.  
@@ -30,6 +28,7 @@ The goals of this project are to:
 #include "stm32f103xx_gpio.h"
 #include "stm32f103xx_spi.h"
 #include "stm32f103xx_i2c.h"
+#include "stm32f103xx_usart.h"
 #include "stm32f103xx_rcc.h"
 ```
 
@@ -38,6 +37,7 @@ The goals of this project are to:
    - GPIO: Examples/001_led_toggle
    - SPI: Examples/004_spi_tx
    - I2C: Examples/005_i2c_master_tx
+   - USART: Examples/006_usart_tx
    
 ## 📌 Notes
 - Drivers are written from scratch using only CMSIS headers and the STM32 reference manual.  
